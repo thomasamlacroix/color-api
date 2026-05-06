@@ -84,9 +84,9 @@ async def predict_color(file: UploadFile = File(...),
         contents = file.file
         img = Image.open(contents)
         #Resized image
-        img = resize_image(img)
+        img_bw_resized = resize_image(img)
         #Convert into array and normalize
-        img = np.array(img)
+        img = np.array(img_bw_resized)
 
 
         shape = img.shape
@@ -101,15 +101,13 @@ async def predict_color(file: UploadFile = File(...),
                 }
             )
 
-
+        #RGB to Lab
         if shape[-1] == 1:
             #Repeat the grayscale array 3 times to mimic an RGB image
             fake_rgb = np.repeat(img, 3, axis=-1)  #(H, W, 3)
             L, _ = rgb_to_lab(np.expand_dims(fake_rgb, axis=0))
-
         elif shape[-1] == 3:
             L, _ = rgb_to_lab(np.expand_dims(img, axis=0))
-
         else:
             return JSONResponse(
                 status_code=400,
@@ -118,43 +116,30 @@ async def predict_color(file: UploadFile = File(...),
                 }
             )
 
-        # shape = (-1,) + shape
-
-        # original_image = X_pred.astype('uint8')
-        # X_pred = X_pred.reshape(shape)
-        # y_pred = app.model.predict(X_pred)
-
-        ab_pred = baseline.predict(L)
-        img_lab_reconstructed = tf.concat([L * 100.0, ab_pred * 128.0], axis=-1)
+        ab_pred = app.model.predict(L)
+        img_lab_reconstructed = tf.concat([L * 100., ab_pred * 128.], axis=-1)
         img_rgb_reconstructed = tfio.experimental.color.lab_to_rgb(img_lab_reconstructed)
-
-        colored_heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_RAINBOW)
-        overlay = cv2.addWeighted(original_image, 0.5, colored_heatmap, 0.3, 0)
-
-        img_array = overlay.tobytes()
-        img_processed =  Image.frombytes('RGB', params.IMAGE_SIZE, img_array)
 
         # Encode image as base64
         #converts images to bytes
+        #Original B&W image in PNG format
         img_byte_arr = io.BytesIO()
-        processed_image.save(img_byte_arr, format='PNG')
+        img_bw_resized.save(img_byte_arr, format='PNG')
         img_byte_arr = img_byte_arr.getvalue()
-        img_proc_base64 = base64.b64encode(img_byte_arr).decode('utf-8')
+        img_bw_resized_base64 = base64.b64encode(img_byte_arr).decode('utf-8')
 
-        #heatmap in PNG format
+        #Reconstructed color image in PNG format
         img_byte_arr = io.BytesIO()
-        img_processed.save(img_byte_arr, format='PNG')
+        img_rgb_reconstructed.save(img_byte_arr, format='PNG')
         img_byte_arr = img_byte_arr.getvalue()
-        heatmap_base64 = base64.b64encode(img_byte_arr).decode('utf-8')
+        img_reconstructed_base64 = base64.b64encode(img_byte_arr).decode('utf-8')
 
-        content = get_response(y_pred)
+        content = {
+            "img_bw_resized": img_bw_resized_base64,
+            "img_reconstructed": img_reconstructed_base64
+        }
 
-        content["image_resized"] = img_proc_base64
-        content["heatmap"] = heatmap_base64
-        return JSONResponse(
-            status_code=200,
-            content=content
-        )
+        return JSONResponse(status_code=200, content=content)
 
     except Exception as e:
         type, value, traceback = sys.exc_info()
