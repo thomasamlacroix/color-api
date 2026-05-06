@@ -3,7 +3,7 @@ reinstall_package:
 	@pip install -e .
 
 run_api:
-	uvicorn api.color_api:app --reload
+	uvicorn color.api.color_api:app --reload
 
 
 run_interface:
