@@ -9,9 +9,9 @@ import os
 import io
 import base64
 from PIL import Image
-from color import params
-from color.utils import resize_image
-from color.registry import load_model, get_response
+from color.params import IMAGE_SIZE
+from color.utils import resize_image, rgb_to_lab
+from color.registry import load_model  #, get_response
 import numpy as np
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -35,8 +35,8 @@ def root():
 
 
 
-@app.post("/generate_heatmap/")
-async def predict_heatmap(file: UploadFile = File(...),
+@app.post("/predict_color/")
+async def predict_color(file: UploadFile = File(...),
                   request: Request=None):
     """
     Upload a greyscale image file(acepted types: '.jpg', '.jpeg', '.png', '.gif', '.bmp')
@@ -79,38 +79,33 @@ async def predict_heatmap(file: UploadFile = File(...),
                 raise HTTPException(status_code=400, detail="File must be an image")
 
         contents = file.file
-        image = Image.open(contents)
-        #image processed
-        processed_image = resize_image(image)
+        img = Image.open(contents)
+        #Resized image
+        img = resize_image(img)
+        #Convert into array and normalize
+        img = np.array(img)
 
-        X_pred = img_to_array(processed_image)
 
-        shape = X_pred.shape
-        if shape != params.IMAGE_SIZE + (3,):
+        shape = img.shape
+        if shape[:-1] != IMAGE_SIZE:
             return JSONResponse(
                 status_code=400,
                 content={
                     "ERROR":  "The image size is not as expected.",
-                    "expected": params.IMAGE_SIZE + (3,),
-                    "received": shape,
+                    "expected": IMAGE_SIZE,
+                    "received": shape[:-1],
                 }
             )
+
+
+
         shape = (-1,) + shape
 
         original_image = X_pred.astype('uint8')
         X_pred = X_pred.reshape(shape)
         y_pred = app.model.predict(X_pred)
 
-        #heatmap
-        explainer = GradCAM(app.model)
-        # X, Y=[1== fake, 0==real]
-        explanations = explainer(X_pred, [[1,0]])
-        heatmap = explanations[0]
 
-        heatmap = heatmap.numpy()
-        #move the values to the positive side
-        heatmap = heatmap - heatmap.min()
-        heatmap = np.uint8(255 * heatmap / heatmap.max())
 
         colored_heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_RAINBOW)
         overlay = cv2.addWeighted(original_image, 0.5, colored_heatmap, 0.3, 0)
