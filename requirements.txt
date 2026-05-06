@@ -10,8 +10,10 @@ colorama
 # API requirements
 fastapi           # API framework
 uvicorn             # web server
-# dill
+dill
 
+#graphics
+matplotlib
 
 #model requirements
 tensorflow

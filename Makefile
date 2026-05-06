@@ -1,5 +1,5 @@
 reinstall_package:
-	@pip uninstall -y color_api || :
+	@pip uninstall -y color_rise_api || :
 	@pip install -e .
 
 run_api:

@@ -4,7 +4,7 @@ Main to test predictions before implementing API endpoint
 
 from color.registry import load_model
 from color.params import IMAGE_SIZE
-from color.utils import resize_image
+from color.utils import resize_image, rgb_to_lab
 import numpy as np
 from PIL import Image
 import tensorflow as tf
@@ -18,21 +18,20 @@ def pred():
 
     print("\n⭐️ Use case: predict color image")
 
-    img_bw = Image.open("../images/image0001_bw.jpg")
-    img_color = Image.open("../images/image0001.jpg")
+    # img_bw = np.array(Image.open("../images/image0001_bw.jpg"))
+    img = np.array(Image.open("../images/image0001.jpg"))
 
+    # print(img_bw.shape)
+    print(img.shape)
 
-    print(img_bw.shape)
-    print(img_color.shape)
+    L, ab = rgb_to_lab(np.expand_dims(img, axis=0))
 
     model = load_model()
     assert model is not None
 
-    L = img_bw
-    print(L)
     ab_pred = model.predict(L)
 
-    img_lab_reconstructed = tf.concat([L, ab_pred * 128.0], axis=-1)
+    img_lab_reconstructed = tf.concat([L * 100., ab_pred * 128.], axis=-1)
 
     img_rgb_reconstructed = tfio.experimental.color.lab_to_rgb(img_lab_reconstructed)
 
@@ -48,7 +47,7 @@ def pred():
     ax[1].axis('off')
     ax[1].set_title('Predicted')
 
-    ax[2].imshow(img_color)
+    ax[2].imshow(img)
     ax[2].axis('off')
     ax[2].set_title('Original')
 
