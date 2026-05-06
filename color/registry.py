@@ -41,18 +41,18 @@ def load_model():
 
 
 
-def get_response(y_predict: np.ndarray):
-    """
-    Returns a dictionary with the images
-    """
-    predict_value = y_predict.item(0)
-    if predict_value > TRIGGER_VALUE:
-        fake_real = RESULTS[1]
-    else:
-        fake_real = RESULTS[0]
+# def get_response(y_predict: np.ndarray):
+#     """
+#     Returns a dictionary with the images
+#     """
+#     predict_value = y_predict.item(0)
+#     if predict_value > TRIGGER_VALUE:
+#         fake_real = RESULTS[1]
+#     else:
+#         fake_real = RESULTS[0]
 
-    content={
-                "fake_real":  fake_real,
-                "predict_value": predict_value,
-            }
-    return content
+#     content={
+#                 "fake_real":  fake_real,
+#                 "predict_value": predict_value,
+#             }
+#     return content
