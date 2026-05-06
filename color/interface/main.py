@@ -3,7 +3,7 @@ Main to test predictions before implementing API endpoint
 """
 
 from color.registry import load_model
-from color.params import IMAGE_SIZE
+# from color.params import IMAGE_SIZE
 from color.utils import resize_image, rgb_to_lab
 import numpy as np
 from PIL import Image
@@ -18,11 +18,8 @@ def pred():
 
     print("\n⭐️ Use case: predict color image")
 
-    # img_bw = np.array(Image.open("../images/image0001_bw.jpg"))
-    img = np.array(Image.open("../images/image0001.jpg"))
-
-    # print(img_bw.shape)
-    print(img.shape)
+    img = resize_image(Image.open("../images/image0001.jpg"))
+    img = np.array(img)
 
     L, ab = rgb_to_lab(np.expand_dims(img, axis=0))
 
@@ -35,7 +32,7 @@ def pred():
 
     img_rgb_reconstructed = tfio.experimental.color.lab_to_rgb(img_lab_reconstructed)
 
-    print("\n✅ prediction done: ")
+    print("\n✅ prediction done, plotting images")
 
     fig, ax = plt.subplots(1, 3, figsize=(10, 10))
 
@@ -51,8 +48,10 @@ def pred():
     ax[2].axis('off')
     ax[2].set_title('Original')
 
+    plt.show()
+
     return
 
 
 if __name__ == '__main__':
-    print("\n✅ test prediction= ", pred(), "\n")
+    pred()
