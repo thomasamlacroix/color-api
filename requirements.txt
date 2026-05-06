@@ -1,0 +1,21 @@
+#test requirements
+pytest
+pytest-asyncio
+pillow
+httpx
+
+#display requirementes
+colorama
+
+# API requirements
+fastapi           # API framework
+uvicorn             # web server
+# dill
+
+
+#model requirements
+tensorflow
+tensorflow-io
+# keras
+numpy
+joblib
