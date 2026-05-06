@@ -1,11 +1,16 @@
-import pytest
-from PIL import Image
-from helper import params
+"""
+Testing image preprocessing
+"""
 
-TEST_IMG = 'test/img/IMG_20240329_131211031.jpg'
+# import pytest
+from PIL import Image
+from color.params import IMAGE_SIZE
+from color.utils import resize_image
+
+TEST_IMG = 'test/images/image0001.jpg'
 
 def test_resize_image():
-    # This doesn't load the pixel data, just the header
     with Image.open(TEST_IMG) as img:
-        width, height = img.size
-        assert params.IMAGE_SIZE == (width, height)
+        img = resize_image(img)
+        height, width = img.size
+        assert IMAGE_SIZE == (height, width)

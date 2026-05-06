@@ -7,6 +7,10 @@ training_outputs/
 
 mlflow.db
 
+img_bw_resized.png
+img_reconstructed.png
+original_resized.png
+
 # OS generated files #
 ######################
 .DS_Store
@@ -23,16 +27,9 @@ __pycache__
 *PKG-INFO
 *.egg-info
 *.csv
-05-ML/**/*.txt
-06-Deep-Learning/**/*.txt
+
 *.zip
 mlruns
 *.sqlite
 # IDE #
 *.vscode
-
-# Specific Challenges
-06-Deep-Learning/03-Convolutional-Neural-Networks/04-Transfer-Learning/flowers/
-
-# Challengify - test challengification files
-*_challengify*
