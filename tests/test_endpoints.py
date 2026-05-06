@@ -74,6 +74,6 @@ async def test_predict_color_decoding():
         img_reconstructed = Image.open(io.BytesIO(img_data))
         img_reconstructed.save('img_reconstructed.png')
 
-        img_data = base64.b64decode(json_result['original_resized'])
-        original_resized = Image.open(io.BytesIO(img_data))
-        original_resized.save('original_resized.png')
+        # img_data = base64.b64decode(json_result['original_resized'])
+        # original_resized = Image.open(io.BytesIO(img_data))
+        # original_resized.save('original_resized.png')

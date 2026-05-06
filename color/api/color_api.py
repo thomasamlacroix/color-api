@@ -13,6 +13,9 @@ from color.params import IMAGE_SIZE
 from color.utils import resize_image, rgb_to_lab
 from color.registry import load_model  #, get_response
 import numpy as np
+import tensorflow as tf
+import tensorflow_io as tfio
+
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.responses import JSONResponse
 
@@ -87,6 +90,7 @@ async def predict_color(file: UploadFile = File(...),
 
 
         shape = img.shape
+
         if shape[:-1] != IMAGE_SIZE:
             return JSONResponse(
                 status_code=400,
@@ -98,14 +102,31 @@ async def predict_color(file: UploadFile = File(...),
             )
 
 
+        if shape[-1] == 1:
+            #Repeat the grayscale array 3 times to mimic an RGB image
+            fake_rgb = np.repeat(img, 3, axis=-1)  #(H, W, 3)
+            L, _ = rgb_to_lab(np.expand_dims(fake_rgb, axis=0))
 
-        shape = (-1,) + shape
+        elif shape[-1] == 3:
+            L, _ = rgb_to_lab(np.expand_dims(img, axis=0))
 
-        original_image = X_pred.astype('uint8')
-        X_pred = X_pred.reshape(shape)
-        y_pred = app.model.predict(X_pred)
+        else:
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "ERROR":  "The expected number of channels is 1 or 3."
+                }
+            )
 
+        # shape = (-1,) + shape
 
+        # original_image = X_pred.astype('uint8')
+        # X_pred = X_pred.reshape(shape)
+        # y_pred = app.model.predict(X_pred)
+
+        ab_pred = baseline.predict(L)
+        img_lab_reconstructed = tf.concat([L * 100.0, ab_pred * 128.0], axis=-1)
+        img_rgb_reconstructed = tfio.experimental.color.lab_to_rgb(img_lab_reconstructed)
 
         colored_heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_RAINBOW)
         overlay = cv2.addWeighted(original_image, 0.5, colored_heatmap, 0.3, 0)
