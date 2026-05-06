@@ -1,0 +1,59 @@
+"""
+Main to test predictions before implementing API endpoint
+"""
+
+from color.registry import load_model
+from color.params import IMAGE_SIZE
+from color.utils import resize_image
+import numpy as np
+from PIL import Image
+import tensorflow as tf
+import tensorflow_io as tfio
+import matplotlib.pyplot as plt
+
+def pred():
+    """
+    Make a prediction using the latest trained model
+    """
+
+    print("\n⭐️ Use case: predict color image")
+
+    img_bw = Image.open("../images/image0001_bw.jpg")
+    img_color = Image.open("../images/image0001.jpg")
+
+
+    print(img_bw.shape)
+    print(img_color.shape)
+
+    model = load_model()
+    assert model is not None
+
+    L = img_bw
+    print(L)
+    ab_pred = model.predict(L)
+
+    img_lab_reconstructed = tf.concat([L, ab_pred * 128.0], axis=-1)
+
+    img_rgb_reconstructed = tfio.experimental.color.lab_to_rgb(img_lab_reconstructed)
+
+    print("\n✅ prediction done: ")
+
+    fig, ax = plt.subplots(1, 3, figsize=(10, 10))
+
+    ax[0].imshow(np.squeeze(L, axis=0), cmap='grey')
+    ax[0].axis('off')
+    ax[0].set_title('Input')
+
+    ax[1].imshow(np.squeeze(img_rgb_reconstructed,axis=0))
+    ax[1].axis('off')
+    ax[1].set_title('Predicted')
+
+    ax[2].imshow(img_color)
+    ax[2].axis('off')
+    ax[2].set_title('Original')
+
+    return
+
+
+if __name__ == '__main__':
+    print("\n✅ test prediction= ", pred(), "\n")

@@ -7,7 +7,7 @@ from PIL import Image
 from color.params import IMAGE_SIZE
 from color.utils import resize_image
 
-TEST_IMG = 'test/images/image0001.jpg'
+TEST_IMG = '/images/image0001.jpg'
 
 def test_resize_image():
     with Image.open(TEST_IMG) as img:

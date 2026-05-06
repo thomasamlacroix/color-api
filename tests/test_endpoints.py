@@ -12,11 +12,8 @@ from httpx import AsyncClient
 # SERVICE_URL = os.environ.get("SERVICE_URL")
 # TOKEN=os.environ.get("CONN_TOKEN").strip()
 
-TEST_IMG = 'test/images/image0001.jpg'
+TEST_IMG = '/images/image0001.jpg'
 
-# HEALTH_EP = "/"
-# # RELOAD_EP = "/reload/"
-# PREDICT_EP = "/predict_color/"
 # TIMEOUT = 30
 
 
