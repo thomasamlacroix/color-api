@@ -12,32 +12,57 @@ run_interface:
 
 test_resize_image:
 	pytest \
-	test/api/test_utils.py::test_resize_image --asyncio-mode=strict -W "ignore"
+	tests/test_utils.py::test_resize_image --asyncio-mode=strict -W "ignore"
 
 
-test_root_is_up:
+# test_root_is_up:
+# 	pytest \
+# 	test/api/test_endpoints.py::test_root_is_up --asyncio-mode=strict -W "ignore"
+
+# test_root_returns_ok:
+# 	pytest \
+# 	test/api/test_endpoints.py::test_root_returns_ok --asyncio-mode=strict -W "ignore"
+
+# test_predict_color_is_up:
+# 	pytest \
+# 	test/api/test_endpoints.py::test_predict_color_is_up --asyncio-mode=strict -W "ignore"
+
+# test_predict_color_is_dict:
+# 	pytest \
+# 	test/api/test_endpoints.py::test_predict_color_is_dict --asyncio-mode=strict -W "ignore"
+
+# test_predict_color_has_key:
+# 	pytest \
+# 	test/api/test_endpoints.py::test_predict_color_has_key --asyncio-mode=strict -W "ignore"
+
+# test_predict_color_decoding:
+# 	pytest \
+# 	test/api/test_endpoints.py::test_predict_color_decoding --asyncio-mode=strict -W "ignore"
+
+
+
+test_api_root:
 	pytest \
-	test/api/test_endpoints.py::test_root_is_up --asyncio-mode=strict -W "ignore"
+	tests/test_endpoints.py::test_root_is_up --asyncio-mode=strict -W "ignore" \
+	tests/test_endpoints.py::test_root_returns_ok --asyncio-mode=strict -W "ignore"
 
-test_root_returns_ok:
+test_api_predict_color:
 	pytest \
-	test/api/test_endpoints.py::test_root_returns_ok --asyncio-mode=strict -W "ignore"
+	tests/test_endpoints.py::test_predict_color_is_up --asyncio-mode=strict -W "ignore" \
+	tests/test_endpoints.py::test_predict_color_is_dict --asyncio-mode=strict -W "ignore" \
+	tests/test_endpoints.py::test_predict_color_has_key --asyncio-mode=strict -W "ignore" \
+	tests/test_endpoints.py::test_predict_color_decoding --asyncio-mode=strict -W "ignore"
 
-test_predict_color_is_up:
-	pytest \
-	test/api/test_endpoints.py::test_predict_color_is_up --asyncio-mode=strict -W "ignore"
 
-test_predict_color_is_dict:
-	pytest \
-	test/api/test_endpoints.py::test_predict_color_is_dict --asyncio-mode=strict -W "ignore"
 
-test_predict_color_has_key:
-	pytest \
-	test/api/test_endpoints.py::test_predict_color_has_key --asyncio-mode=strict -W "ignore"
+# test_api_on_docker:
+# 	pytest \
+# 	tests/api/test_docker_endpoints.py --asyncio-mode=strict -W "ignore"
 
-test_predict_color_decoding:
-	pytest \
-	test/api/test_endpoints.py::test_predict_color_decoding --asyncio-mode=strict -W "ignore"
+# test_api_on_prod:
+# 	pytest \
+# 	tests/api/test_cloud_endpoints.py --asyncio-mode=strict -W "ignore"
+
 
 
 default: pylint pytest

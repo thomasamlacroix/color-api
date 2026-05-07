@@ -12,7 +12,7 @@ from httpx import AsyncClient
 # SERVICE_URL = os.environ.get("SERVICE_URL")
 # TOKEN=os.environ.get("CONN_TOKEN").strip()
 
-TEST_IMG = '/images/image0001.jpg'
+TEST_IMG = '/images/image0001_bw.jpg'
 
 # TIMEOUT = 30
 
