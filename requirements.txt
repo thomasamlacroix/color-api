@@ -8,12 +8,15 @@ httpx
 colorama
 
 # API requirements
-fastapi           # API framework
-uvicorn             # web server
+fastapi  # API framework
+uvicorn  # web server
 dill
 
 #graphics
 matplotlib
+
+#image utils requirements
+python-multipart
 
 #model requirements
 tensorflow
