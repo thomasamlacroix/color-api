@@ -117,8 +117,14 @@ async def predict_color(file: UploadFile = File(...),
             )
 
         ab_pred = app.model.predict(L)
+
         img_lab_reconstructed = tf.concat([L * 100., ab_pred * 128.], axis=-1)
         img_rgb_reconstructed = tfio.experimental.color.lab_to_rgb(img_lab_reconstructed)
+        img_rgb_reconstructed = np.squeeze(img_rgb_reconstructed, axis=0)
+        img_rgb_reconstructed_array = img_rgb_reconstructed.tobytes()
+        img_rgb_reconstructed_processed =  Image.frombytes('RGB',
+                                         IMAGE_SIZE,
+                                         img_rgb_reconstructed_array)
 
         # Encode image as base64
         #converts images to bytes
@@ -130,7 +136,7 @@ async def predict_color(file: UploadFile = File(...),
 
         #Reconstructed color image in PNG format
         img_byte_arr = io.BytesIO()
-        img_rgb_reconstructed.save(img_byte_arr, format='PNG')
+        img_rgb_reconstructed_processed.save(img_byte_arr, format='PNG')
         img_byte_arr = img_byte_arr.getvalue()
         img_reconstructed_base64 = base64.b64encode(img_byte_arr).decode('utf-8')
 
