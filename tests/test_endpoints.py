@@ -7,12 +7,12 @@ import base64
 import io
 import os
 from PIL import Image
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 
 # SERVICE_URL = os.environ.get("SERVICE_URL")
 # TOKEN=os.environ.get("CONN_TOKEN").strip()
 
-TEST_IMG = '/images/image0001_bw.jpg'
+TEST_IMG = 'tests/images/image0001_bw.jpg'
 
 # TIMEOUT = 30
 
@@ -21,7 +21,9 @@ TEST_IMG = '/images/image0001_bw.jpg'
 @pytest.mark.asyncio
 async def test_root_is_up():
     from color.api.color_api import app
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+    # async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.get("/")
     assert response.status_code == 200
 
@@ -29,7 +31,8 @@ async def test_root_is_up():
 @pytest.mark.asyncio
 async def test_root_returns_ok():
     from color.api.color_api import app
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
         response = await ac.get("/")
     assert response.json() == {"API": "OK"}
 
@@ -37,16 +40,20 @@ async def test_root_returns_ok():
 @pytest.mark.asyncio
 async def test_predict_color_is_up():
     from color.api.color_api import app
-    async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.post("/predict_color/")
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        files = {'file': open(TEST_IMG, 'rb')}
+        response = await ac.post("/predict_color/", files=files)
     assert response.status_code == 200
 
 
 @pytest.mark.asyncio
 async def test_predict_color_is_dict():
     from color.api.color_api import app
-    async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.post("/predict_color/")
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        files = {'file': open(TEST_IMG, 'rb')}
+        response = await ac.post("/predict_color/", files=files)
     assert isinstance(response.json(), dict)
     assert len(response.json()) == 1
 
@@ -54,26 +61,27 @@ async def test_predict_color_is_dict():
 @pytest.mark.asyncio
 async def test_predict_color_has_key():
     from color.api.color_api import app
-    async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.post("/predict_color/")
-    assert response.json().get('colored_img', False)
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        files = {'file': open(TEST_IMG, 'rb')}
+        response = await ac.post("/predict_color/", files=files)
+    assert response.json().get('img_bw_resized', False)
+    assert response.json().get('img_reconstructed', False)
 
 
 @pytest.mark.asyncio
 async def test_predict_color_decoding():
     from color.api.color_api import app
-    async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.post("/predict_color/")
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        files = {'file': open(TEST_IMG, 'rb')}
+        response = await ac.post("/predict_color/", files=files)
         json_result = response.json()
 
         img_data = base64.b64decode(json_result['img_bw_resized'])
         img_bw_resized = Image.open(io.BytesIO(img_data))
-        img_bw_resized.save('images/img_bw_resized.png')
+        img_bw_resized.save('tests/images/img_bw_resized.png')
 
         img_data = base64.b64decode(json_result['img_reconstructed'])
         img_reconstructed = Image.open(io.BytesIO(img_data))
-        img_reconstructed.save('images/img_reconstructed.png')
-
-        # img_data = base64.b64decode(json_result['original_resized'])
-        # original_resized = Image.open(io.BytesIO(img_data))
-        # original_resized.save('original_resized.png')
+        img_reconstructed.save('tests/images/img_reconstructed.png')
