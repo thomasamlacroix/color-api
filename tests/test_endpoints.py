@@ -55,7 +55,7 @@ async def test_predict_color_is_dict():
         files = {'file': open(TEST_IMG, 'rb')}
         response = await ac.post("/predict_color/", files=files)
     assert isinstance(response.json(), dict)
-    assert len(response.json()) == 1
+    assert len(response.json()) == 2
 
 
 @pytest.mark.asyncio
