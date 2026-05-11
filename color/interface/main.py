@@ -18,7 +18,7 @@ def pred():
 
     print("\n⭐️ Use case: predict color image")
 
-    img = resize_image(Image.open("../images/image0001.jpg"))
+    img = resize_image(Image.open("tests/images/image0001.jpg"))
     img = np.array(img)
 
     L, ab = rgb_to_lab(np.expand_dims(img, axis=0))

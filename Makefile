@@ -7,7 +7,7 @@ run_api:
 
 
 run_interface:
-	python interface/main.py
+	python color/interface/main.py
 
 
 test_resize_image:
