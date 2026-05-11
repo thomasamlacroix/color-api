@@ -14,6 +14,10 @@ test_resize_image:
 	pytest \
 	tests/test_utils.py::test_resize_image --asyncio-mode=strict -W "ignore"
 
+test_rgb_to_lab:
+	pytest \
+	tests/test_utils.py::test_rgb_to_lab --asyncio-mode=strict -W "ignore"
+
 
 test_api_root:
 	pytest \
