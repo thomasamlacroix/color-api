@@ -1,0 +1,26 @@
+#test requirements
+pytest
+pytest-asyncio
+pillow
+httpx
+
+#display requirementes
+colorama
+
+# API requirements
+fastapi  # API framework
+uvicorn  # web server
+dill
+
+#graphics
+matplotlib
+
+#image utils requirements
+python-multipart
+
+#model requirements
+tensorflow
+tensorflow-io
+# keras
+numpy
+joblib
