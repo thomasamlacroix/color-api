@@ -4,12 +4,11 @@ training_outputs/
 .python-version
 
 .env
+.envrc
 
 mlflow.db
 
-img_bw_resized.png
-img_reconstructed.png
-original_resized.png
+tests/images/
 
 # OS generated files #
 ######################
