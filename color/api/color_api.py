@@ -2,8 +2,6 @@
 API endpoints
 """
 
-#import numpy as np
-#import pandas as pd
 import sys
 import os
 import io
@@ -11,7 +9,7 @@ import base64
 from PIL import Image
 from color.params import IMAGE_SIZE
 from color.utils import resize_image, rgb_to_lab
-from color.registry import load_model  #, get_response
+from color.registry import load_model
 import numpy as np
 import tensorflow as tf
 import tensorflow_io as tfio
@@ -46,7 +44,6 @@ async def predict_color(file: UploadFile = File(...),
         return :
             "img_bw_resized":  The original greyscale image, resized to 256x256,
             "img_reconstructed": the predicted colorized image, with size 256x256,
-            "original_resized": original color image, resized to 256x256
     """
     # headers = request.headers
     # token = headers.get("token")
@@ -121,10 +118,7 @@ async def predict_color(file: UploadFile = File(...),
         img_lab_reconstructed = tf.concat([L * 100., ab_pred * 128.], axis=-1)
         img_rgb_reconstructed = tfio.experimental.color.lab_to_rgb(img_lab_reconstructed)
         img_rgb_reconstructed = np.squeeze(img_rgb_reconstructed, axis=0)
-        img_rgb_reconstructed_bytes = img_rgb_reconstructed.tobytes()
-        img_rgb_reconstructed_processed =  Image.frombytes('RGB',
-                                         IMAGE_SIZE,
-                                         img_rgb_reconstructed_bytes)
+        img_rgb_reconstructed_processed = Image.fromarray(np.uint8(img_rgb_reconstructed*255))
 
         # Encode image as base64
         #converts images to bytes
