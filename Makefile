@@ -32,13 +32,13 @@ test_api_predict_color:
 	tests/test_endpoints.py::test_predict_color_has_key --asyncio-mode=strict -W "ignore" \
 	tests/test_endpoints.py::test_predict_color_decoding --asyncio-mode=strict -W "ignore"
 
-# test_api_on_docker:
-# 	pytest \
-# 	tests/api/test_docker_endpoints.py --asyncio-mode=strict -W "ignore"
+test_api_on_docker:
+	pytest \
+	tests/test_docker_endpoints.py --asyncio-mode=strict -W "ignore"
 
-# test_api_on_prod:
+# test_api_in_prod:
 # 	pytest \
-# 	tests/api/test_cloud_endpoints.py --asyncio-mode=strict -W "ignore"
+# 	tests/test_cloud_endpoints.py --asyncio-mode=strict -W "ignore"
 
 
 

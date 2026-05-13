@@ -19,7 +19,7 @@ TIMEOUT = 30
 
 # Find the port the docker image is running on
 image_name = f"{os.environ.get('DOCKER_IMAGE_NAME')}:dev"
-# Use docker ps to list all running containers derived from $GAR_IMAGE:dev
+# Use docker ps to list all running containers derived from $DOCKER_IMAGE_NAME:dev
 docker_ps_command = f'docker ps --filter ancestor={image_name} --format "{{{{.Ports}}}}"'
 docker_ps_output = subprocess.Popen(docker_ps_command,
                         shell=True,
@@ -28,18 +28,18 @@ docker_ps_output = subprocess.Popen(docker_ps_command,
 
 # If we have an output, extract the port the container is running on
 if docker_ps_output:
-    docker_port = re.findall(":(\d{4})-", docker_ps_output)[0]
+    docker_port = re.findall(":(\\d{4})-", docker_ps_output)[0]
 else:
     # If no output set docker_port to None
     # In the tests we'll assert docker_port exists
     docker_port = None
-    # Print guidance for student that will show when running the test
+    # Print guidance that will show when running the test
     print("""
           \033[0;35m
           WARNING: We did not find a port with a docker container running
 
           Verify: - That your docker container is running
-                  - The docker image was correctly named using $GAR_IMAGE:dev
+                  - The docker image was correctly named using $DOCKER_IMAGE_NAME:dev
                   - If your API is working locally, that it is running on a docker
                     container and not just using uvicorn locally
           \033[0m""")
