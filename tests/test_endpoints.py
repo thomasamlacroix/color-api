@@ -5,16 +5,11 @@ Test API endpoints
 import pytest
 import base64
 import io
-import os
 from PIL import Image
 from httpx import AsyncClient, ASGITransport
 
-# SERVICE_URL = os.environ.get("SERVICE_URL")
-# TOKEN=os.environ.get("CONN_TOKEN").strip()
 
 TEST_IMG = 'tests/images/image0001_bw.jpg'
-
-# TIMEOUT = 30
 
 
 
@@ -23,7 +18,6 @@ async def test_root_is_up():
     from color.api.color_api import app
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
-    # async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.get("/")
     assert response.status_code == 200
 
