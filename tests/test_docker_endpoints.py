@@ -70,7 +70,8 @@ async def test_predict_color_is_up():
     async with AsyncClient(base_url=SERVICE_URL, timeout=TIMEOUT) as ac:
         headers = {'token': TOKEN}
         files = {'file': open(TEST_IMG, 'rb')}
-        response = await ac.post("/predict_color/", files=files, headers=headers)
+        response = await ac.post("/predict_color/", files=files,
+                                 headers=headers)
     assert response.status_code == 200
 
 
@@ -80,7 +81,8 @@ async def test_predict_color_is_dict():
     async with AsyncClient(base_url=SERVICE_URL, timeout=TIMEOUT) as ac:
         headers = {'token': TOKEN}
         files = {'file': open(TEST_IMG, 'rb')}
-        response = await ac.post("/predict_color/", files=files, headers=headers)
+        response = await ac.post("/predict_color/", files=files,
+                                 headers=headers)
     assert isinstance(response.json(), dict)
     assert len(response.json()) == 2
 
@@ -91,7 +93,8 @@ async def test_predict_color_has_key():
     async with AsyncClient(base_url=SERVICE_URL, timeout=TIMEOUT) as ac:
         headers = {'token': TOKEN}
         files = {'file': open(TEST_IMG, 'rb')}
-        response = await ac.post("/predict_color/", files=files, headers=headers)
+        response = await ac.post("/predict_color/", files=files,
+                                 headers=headers)
     assert response.json().get('img_bw_resized', False)
     assert response.json().get('img_reconstructed', False)
 
@@ -102,7 +105,8 @@ async def test_predict_color_decoding():
     async with AsyncClient(base_url=SERVICE_URL, timeout=TIMEOUT) as ac:
         headers = {'token': TOKEN}
         files = {'file': open(TEST_IMG, 'rb')}
-        response = await ac.post("/predict_color/", files=files, headers=headers)
+        response = await ac.post("/predict_color/", files=files,
+                                 headers=headers)
         json_result = response.json()
 
         img_data = base64.b64decode(json_result['img_bw_resized'])
