@@ -7,7 +7,7 @@ import os
 import io
 import base64
 from PIL import Image
-from color.params import IMAGE_SIZE
+from color.params import IMAGE_SIZE, TOKEN
 from color.utils import resize_image, rgb_to_lab
 from color.registry import load_model
 import numpy as np
@@ -45,16 +45,16 @@ async def predict_color(file: UploadFile = File(...),
             "img_bw_resized":  The original greyscale image, resized to 256x256,
             "img_reconstructed": the predicted colorized image, with size 256x256,
     """
-    # headers = request.headers
-    # token = headers.get("token")
-    # # If there is no token or it does not match --> Error
-    # if params.TOKEN != token:
-    #     return JSONResponse(
-    #                 status_code=400,
-    #                 content={
-    #                     "ERROR":  "Misisng or wrong token."
-    #                 }
-    #             )
+    headers = request.headers
+    token = headers.get("token")
+    # If there is no token or it does not match --> Error
+    if TOKEN != token:
+        return JSONResponse(
+                    status_code=400,
+                    content={
+                        "ERROR":  "Missing or wrong token."
+                    }
+                )
 
     if app.model is None:
         app.model =  load_model()

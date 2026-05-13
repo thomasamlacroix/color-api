@@ -11,7 +11,7 @@ from httpx import AsyncClient
 import re
 import subprocess
 
-# TOKEN=os.environ.get("CONN_TOKEN").strip()
+TOKEN = os.environ.get("CONN_TOKEN").strip()
 
 TEST_IMG = 'tests/images/image0001_bw.jpg'
 
@@ -68,8 +68,9 @@ async def test_root_returns_ok():
 async def test_predict_color_is_up():
     assert docker_port # Stop if no docker port found
     async with AsyncClient(base_url=SERVICE_URL, timeout=TIMEOUT) as ac:
+        headers = {'token': TOKEN}
         files = {'file': open(TEST_IMG, 'rb')}
-        response = await ac.post("/predict_color/", files=files)
+        response = await ac.post("/predict_color/", files=files, headers=headers)
     assert response.status_code == 200
 
 
@@ -77,8 +78,9 @@ async def test_predict_color_is_up():
 async def test_predict_color_is_dict():
     assert docker_port # Stop if no docker port found
     async with AsyncClient(base_url=SERVICE_URL, timeout=TIMEOUT) as ac:
+        headers = {'token': TOKEN}
         files = {'file': open(TEST_IMG, 'rb')}
-        response = await ac.post("/predict_color/", files=files)
+        response = await ac.post("/predict_color/", files=files, headers=headers)
     assert isinstance(response.json(), dict)
     assert len(response.json()) == 2
 
@@ -87,8 +89,9 @@ async def test_predict_color_is_dict():
 async def test_predict_color_has_key():
     assert docker_port # Stop if no docker port found
     async with AsyncClient(base_url=SERVICE_URL, timeout=TIMEOUT) as ac:
+        headers = {'token': TOKEN}
         files = {'file': open(TEST_IMG, 'rb')}
-        response = await ac.post("/predict_color/", files=files)
+        response = await ac.post("/predict_color/", files=files, headers=headers)
     assert response.json().get('img_bw_resized', False)
     assert response.json().get('img_reconstructed', False)
 
@@ -97,8 +100,9 @@ async def test_predict_color_has_key():
 async def test_predict_color_decoding():
     assert docker_port # Stop if no docker port found
     async with AsyncClient(base_url=SERVICE_URL, timeout=TIMEOUT) as ac:
+        headers = {'token': TOKEN}
         files = {'file': open(TEST_IMG, 'rb')}
-        response = await ac.post("/predict_color/", files=files)
+        response = await ac.post("/predict_color/", files=files, headers=headers)
         json_result = response.json()
 
         img_data = base64.b64decode(json_result['img_bw_resized'])
