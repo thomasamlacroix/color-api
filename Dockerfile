@@ -8,4 +8,4 @@ COPY requirements.txt /requirements.txt
 RUN pip install --upgrade pip
 RUN pip install -r /requirements.txt
 
-CMD uvicorn api.dfake_api:app --host 0.0.0.0
+CMD uvicorn color.api.color_api:app --host 0.0.0.0 --port $PORT
