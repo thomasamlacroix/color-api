@@ -20,6 +20,6 @@ def resize_image(image):
 def rgb_to_lab(image):
     image = tf.cast(image, tf.float32) / 255.0
     lab = tfio.experimental.color.rgb_to_lab(image)
-    L = lab[:, :, :, :1] / 100.
+    L = lab[:, :, :, :1] #/ 100. no normalization for ResNet
     ab = lab[:, :, :, 1:] / 128.
     return (L, ab)

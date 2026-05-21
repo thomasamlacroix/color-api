@@ -115,7 +115,7 @@ async def predict_color(file: UploadFile = File(...),
 
         ab_pred = app.model.predict(L)
 
-        img_lab_reconstructed = tf.concat([L * 100., ab_pred * 128.], axis=-1)
+        img_lab_reconstructed = tf.concat([L, ab_pred * 128.], axis=-1)  #No L * 100. with ResNet
         img_rgb_reconstructed = tfio.experimental.color.lab_to_rgb(img_lab_reconstructed)
         img_rgb_reconstructed = np.squeeze(img_rgb_reconstructed, axis=0)
         img_rgb_reconstructed_processed = Image.fromarray(np.uint8(img_rgb_reconstructed*255))
