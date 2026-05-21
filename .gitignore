@@ -5,6 +5,7 @@ models/
 
 .env
 .envrc
+.env.yaml
 
 mlflow.db
 
