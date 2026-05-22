@@ -19,6 +19,7 @@ TIMEOUT = 30
 
 # Find the port the docker image is running on
 image_name = f"{os.environ.get('DOCKER_IMAGE_NAME')}:dev"
+
 # Use docker ps to list all running containers derived from $DOCKER_IMAGE_NAME:dev
 docker_ps_command = f'docker ps --filter ancestor={image_name} --format "{{{{.Ports}}}}"'
 docker_ps_output = subprocess.Popen(docker_ps_command,
