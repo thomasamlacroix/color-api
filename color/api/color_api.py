@@ -88,13 +88,14 @@ async def predict_color(file: UploadFile = File(...),
 
         shape = img_bw_resized_array.shape
 
-        if shape[:-1] != IMAGE_SIZE:
+        # if shape[:-1] != IMAGE_SIZE:
+        if shape[:2] != IMAGE_SIZE:
             return JSONResponse(
                 status_code=400,
                 content={
                     "ERROR":  "The image size is not as expected.",
                     "expected": IMAGE_SIZE,
-                    "received": shape[:-1],
+                    "received": shape[:2],
                 }
             )
 
@@ -106,12 +107,18 @@ async def predict_color(file: UploadFile = File(...),
         elif shape[-1] == 3:
             L, _ = rgb_to_lab(np.expand_dims(img_bw_resized_array, axis=0))
         else:
-            return JSONResponse(
-                status_code=400,
-                content={
-                    "ERROR":  "The expected number of channels is 1 or 3."
-                }
-            )
+            if len(shape) == 2:  #no explicit dimension for channel, need to expand
+                img_bw_resized_array = np.expand_dims(img_bw_resized_array, axis=-1)
+                #Repeat the grayscale array 3 times to mimic an RGB image
+                fake_rgb = np.repeat(img_bw_resized_array, 3, axis=-1)  #(H, W, 3)
+                L, _ = rgb_to_lab(np.expand_dims(fake_rgb, axis=0))
+            else:
+                return JSONResponse(
+                    status_code=400,
+                    content={
+                        "ERROR":  "The expected number of channels is 1 or 3."
+                    }
+                )
 
         ab_pred = app.model.predict(L)
 

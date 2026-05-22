@@ -11,7 +11,9 @@ from httpx import AsyncClient, ASGITransport
 
 TOKEN = os.environ.get("CONN_TOKEN").strip()
 
-TEST_IMG = 'tests/images/image0001_bw.jpg'
+# TEST_IMG = 'tests/images/image0001_bw.jpg'
+TEST_IMG = 'tests/images/pont-alexandre-iii.jpg'
+
 
 
 
