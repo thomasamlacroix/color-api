@@ -36,9 +36,9 @@ test_api_on_docker:
 	pytest \
 	tests/test_docker_endpoints.py --asyncio-mode=strict -W "ignore"
 
-# test_api_in_prod:
-# 	pytest \
-# 	tests/test_cloud_endpoints.py --asyncio-mode=strict -W "ignore"
+test_api_in_prod:
+	pytest \
+	tests/test_cloud_endpoints.py --asyncio-mode=strict -W "ignore"
 
 
 
